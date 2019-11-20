@@ -20,7 +20,7 @@ public class SkyblockZ extends JavaPlugin {
         taskChainFactory = BukkitTaskChainFactory.create(this);
 
         ConfigManager.init(instance);
-        DataConnection.init(instance);
+        DataConnection.getConnection();
         CommandManager.init(instance);
         EventManager.init(instance);
         TaskManager.init(instance);

@@ -13,10 +13,6 @@ public class DataConnection {
 
     private static Connection connection;
 
-    public static void init() {
-        getConnection();
-    }
-
     public static Connection getConnection() {
         try {
             if (connection == null || connection.isClosed()) {
