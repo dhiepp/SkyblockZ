@@ -67,7 +67,7 @@ public class InviteManager {
         target.spigot().sendMessage((new ComponentBuilder(ChatUtils.getLineBreak(0))
                 .append(TextComponent.fromLegacyText(ChatColor.GRAY + inviter.getDisplayName()))
                 .append(" đã mời bạn chơi chung đảo\n").color(ChatColor.YELLOW)
-                .append("&eLời mời sẽ hết hạn sau 60 giây.\n").color(ChatColor.GRAY)
+                .append("Lời mời sẽ hết hạn sau 60 giây.\n").color(ChatColor.YELLOW)
                 .append("[ĐỒNG Ý]").color(ChatColor.GREEN).bold(true)
                 .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("/coop accept " + inviterName)))
                 .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/coop accept " + inviterName)).append(" ").reset()

@@ -2,6 +2,9 @@ name: SkyblockZ
 version: ${project.version}
 main: com.dhiep.skyblockz.SkyblockZ
 load: STARTUP
+depend:
+  - SlimeWorldManager
+  - WorldGuard
 authors: [dhiep]
 description: A Skyblock Plugin!
 
