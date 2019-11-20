@@ -1,9 +1,0 @@
-.owner-uuid:
-  members:
-  - 'uuid1'
-  - 'uuid2'
-  team-size: 4
-  radius: 64
-  spawnX: 8
-  spawnY: 100
-  spawnZ: 3
