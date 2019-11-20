@@ -1,0 +1,4 @@
+.player-uuid:
+  name: 'player'
+  island: 'owner-uuid'
+  spawn: 8,100,3

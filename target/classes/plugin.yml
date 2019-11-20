@@ -1,0 +1,21 @@
+name: SkyblockZ
+version: 0.1-ALPHA
+main: com.dhiep.skyblockz.SkyblockZ
+load: STARTUP
+authors: [dhiep]
+description: A Skyblock Plugin!
+
+commands:
+  island:
+    description: Main Skyblock Command
+    aliases:
+      - skyblock
+      - is
+      - sb
+    usage: /<command>
+  coop:
+    description: Skyblock Coop Command
+    usage: /<command>
+  slime:
+    description: Test slime worlds
+    permission: skyblockz.admin
