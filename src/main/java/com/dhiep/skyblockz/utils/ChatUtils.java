@@ -6,8 +6,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ChatUtils {
-    private static String LINE_BREAK_FIRST = "&6--------------------------------------------------&r\n";
-    private static String LINE_BREAK_LAST = "\n&6--------------------------------------------------";
+    private static final String LINE_BREAK_FIRST = "&6--------------------------------------------------&r\n";
+    private static final String LINE_BREAK_LAST = "\n&6--------------------------------------------------";
+
+    public static void debug(String debug) {
+        System.out.println("[DEBUG-SkyblockZ] " + debug);
+    }
 
     public static String getLineBreak(int fl) {
         if (fl == 0) return ChatColor.translateAlternateColorCodes('&', LINE_BREAK_FIRST);

@@ -13,7 +13,7 @@ public class DataConnection {
 
     private static Connection connection;
 
-    public static void init(SkyblockZ instance) {
+    public static void init() {
         getConnection();
     }
 
@@ -33,12 +33,11 @@ public class DataConnection {
                 //Create table if not exists
                 createTables(connection);
             }
-            return connection;
         } catch (Exception ex) {
             ChatUtils.severeConsole("Cannot load data file!");
             ex.printStackTrace();
         }
-        return null;
+        return connection;
     }
 
     public static void close() {
@@ -55,8 +54,8 @@ public class DataConnection {
                 "(uuid TEXT not null primary key, team_size INTEGER default 4, radius INTEGER default 64, " +
                 "spawnX INTEGER, spawnY INTEGER, spawnZ INTEGER)").execute();
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS players " +
-                "(uuid TEXT not null primary key, name TEXT, " +
-                "island_uuid TEXT references islands on update cascade on delete cascade, " +
+                "(uuid TEXT not null primary key, name TEXT collate nocase, " +
+                "island_uuid TEXT references islands on update cascade on delete set null, " +
                 "spawnX INTEGER, spawnY INTEGER, spawnZ INTEGER);").execute();
     }
 }

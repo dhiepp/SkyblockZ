@@ -10,7 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class IslandData {
@@ -52,14 +52,15 @@ public class IslandData {
                 skyblockIsland.setSpawn(spawn);
 
                 //GET members list
-                sql = conn.prepareStatement("SELECT uuid FROM players WHERE island_uuid = ?");
+                sql = conn.prepareStatement("SELECT uuid, name FROM players WHERE island_uuid = ?");
                 sql.setString(1, islandUUID);
 
                 rs = sql.executeQuery();
-                ArrayList<String> members = new ArrayList<>();
+                HashMap<String, String> members = new HashMap<>();
                 while (!rs.next()) {
-                    String memberUUID = rs.getString("puuid");
-                    members.add(memberUUID);
+                    String memberUUID = rs.getString("uuid");
+                    String memberName = rs.getString("name");
+                    members.put(memberUUID, memberName);
                 }
                 skyblockIsland.setMembers(members);
 
@@ -89,7 +90,7 @@ public class IslandData {
                 sql.setInt(5, spawn.getBlockY());
                 sql.setInt(6, spawn.getBlockZ());
 
-                if (sql.executeUpdate() < 1) throw new SQLException();
+                if (sql.executeUpdate() < 1) throw new SQLException("No row changed");
 
                 loadedIslands.put(islandUUID, skyblockIsland);
             } catch (SQLException ex) {
@@ -117,7 +118,7 @@ public class IslandData {
                 sql.setInt(5, spawn.getBlockZ());
                 sql.setString(6, islandUUID);
 
-                if (sql.executeUpdate() < 1) throw new SQLException();
+                if (sql.executeUpdate() < 1) throw new SQLException("No row changed");
             } catch (SQLException ex) {
                 ChatUtils.warnConsole("Cannot update data of island: " + islandUUID);
                 ex.printStackTrace();
@@ -136,7 +137,7 @@ public class IslandData {
                 sql.setString(1, newIslandUUID);
                 sql.setString(2, oldIslandUUID);
 
-                if (sql.executeUpdate() < 1) throw new SQLException();
+                if (sql.executeUpdate() < 1) throw new SQLException("No row changed");
                 SkyblockIsland skyblockIsland = loadedIslands.get(oldIslandUUID);
                 loadedIslands.remove(oldIslandUUID);
                 loadedIslands.put(newIslandUUID, skyblockIsland);
@@ -157,7 +158,7 @@ public class IslandData {
                 PreparedStatement sql = conn.prepareStatement("DELETE FROM islands WHERE uuid = ?");
                 sql.setString(1, islandUUID);
 
-                if (sql.executeUpdate() < 1) throw new SQLException();
+                if (sql.executeUpdate() < 1) throw new SQLException("No row changed");
                 loadedIslands.remove(islandUUID);
             } catch (SQLException ex) {
                 ChatUtils.sendPlayerMessage(player, true,

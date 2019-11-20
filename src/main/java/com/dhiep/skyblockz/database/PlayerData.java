@@ -74,7 +74,7 @@ public class PlayerData {
                 PreparedStatement sql = conn.prepareStatement("INSERT INTO players (uuid, name) VALUES (?, ?)");
                 sql.setString(1, playerUUID);
                 sql.setString(2, playerName);
-                if (sql.executeUpdate() < 1) throw new SQLException();
+                if (sql.executeUpdate() < 1) throw new SQLException("No row inserted");
 
                 playing.put(playerUUID, skyblockPlayer);
             } catch (SQLException ex) {
@@ -117,9 +117,10 @@ public class PlayerData {
 
     private static void savePlayerData(Connection conn, String playerUUID, SkyblockPlayer skyblockPlayer) throws SQLException {
         Location spawn = skyblockPlayer.getSpawn();
+        ChatUtils.debug("SAVE " + skyblockPlayer.getName() + " : " + skyblockPlayer.getIslandUUID());
 
         PreparedStatement sql = conn.prepareStatement(
-                "UPDATE players SET (island_uuid, spawnX, spawnY, spawnZ) = (?, ?, ?, ?) WHERE uuid = ?");
+                "UPDATE players SET island_uuid = ?, spawnX = ?, spawnY = ?, spawnZ = ? WHERE uuid = ?");
         sql.setString(1, skyblockPlayer.getIslandUUID());
         if (spawn == null) {
             sql.setNull(2, Types.INTEGER);
@@ -132,22 +133,28 @@ public class PlayerData {
         }
         sql.setString(5, playerUUID);
 
-        if (sql.executeUpdate() < 1) throw new SQLException();
+        if (sql.executeUpdate() < 1) throw new SQLException("No row changed");
     }
 
-    public static void removeOfflinePlayerIsland(Player owner, String playerUUID) {
-        try {
-            Connection conn = DataConnection.getConnection();
+    public static void removeOfflinePlayerIsland(Player owner, String kickedName) {
+        SkyblockZ.newSharedChain("SQLITE").async(() -> {
+            try {
+                Connection conn = DataConnection.getConnection();
 
-            PreparedStatement sql = conn.prepareStatement(
-                    "UPDATE players SET island_uuid = null WHERE uuid = ?");
-            sql.setString(1, playerUUID);
+                PreparedStatement sql = conn.prepareStatement(
+                        "UPDATE players SET island_uuid = null WHERE name = ? AND island_uuid = ?");
+                sql.setString(1, kickedName);
+                sql.setString(2, owner.getUniqueId().toString());
 
-            if (sql.executeUpdate() < 1) throw new SQLException();
-        } catch (SQLException ex) {
-            ChatUtils.sendPlayerMessage(owner, true, "&cĐã có lỗi xảy ra khi kick thành viên này!");
-            ChatUtils.warnConsole("Failed to remove offline player island: " + playerUUID);
-            ex.printStackTrace();
-        }
+                if (sql.executeUpdate() < 1) {
+                    ChatUtils.sendPlayerMessage(owner, true, "&cNgười chơi này không phải thành viên đảo bạn!");
+                }
+                else ChatUtils.sendPlayerMessage(owner, true, "&aĐã xóa &7" + kickedName + "&c khỏi đảo của bạn");
+            } catch (SQLException ex) {
+                ChatUtils.sendPlayerMessage(owner, true, "&cĐã có lỗi xảy ra khi kick thành viên này!");
+                ChatUtils.warnConsole("Failed to remove offline player island: " + kickedName);
+                ex.printStackTrace();
+            }
+        }).execute();
     }
 }

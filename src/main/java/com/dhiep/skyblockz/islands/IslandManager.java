@@ -122,16 +122,27 @@ public class IslandManager {
 
     public static void unloadIsland(Player player) {
         String islandUUID = PlayerData.getPlayerData(player).getIslandUUID();
-        //Player doesnt have island
-        if (islandUUID == null) return;
+        SkyblockZ.newChain().delay(20).sync(() -> {
+            //Player doesnt have island
+            if (islandUUID == null) return;
 
-        SkyblockIsland skyblockIsland = IslandData.getIsland(islandUUID);
-        //Check online owner and cancel unload
-        if (Bukkit.getPlayer(UUID.fromString(skyblockIsland.getOwnerUUID())) != null) return;
-        //Check online member and cancel unload
-        for (String memberUUID : skyblockIsland.getMembers()) {
-            if (Bukkit.getPlayer(UUID.fromString(memberUUID)) != null) return;
-        }
-        SlimeWorldManager.unloadWorld(islandUUID);
+            SkyblockIsland skyblockIsland = IslandData.getIsland(islandUUID);
+            //Check online owner and cancel unload
+            Player owner = Bukkit.getPlayer(UUID.fromString(skyblockIsland.getOwnerUUID()));
+            if (owner!=null && owner.isOnline()) {
+                ChatUtils.debug(owner.getName() + " is online!");
+                return;}
+
+            //Check online member and cancel unload
+            for (String memberUUID : skyblockIsland.getMembers().keySet()) {
+                Player member = Bukkit.getPlayer(UUID.fromString(memberUUID));
+                if (member != null && member.isOnline()){
+
+                    ChatUtils.debug(member.getName() + " is online!");
+                    return;
+                }
+            }
+            SlimeWorldManager.unloadWorld(islandUUID);
+        }).execute();
     }
 }

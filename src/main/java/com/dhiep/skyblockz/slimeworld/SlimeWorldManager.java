@@ -18,10 +18,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SlimeWorldManager {
     private static SlimePlugin slimePlugin;
@@ -69,7 +66,9 @@ public class SlimeWorldManager {
                 SlimeWorld slimeWorld = slimePlugin.loadWorld(slimeLoader, playerUUID, false, defaultPropertyMap);
 
                 //Create config
-                PlayerData.getPlayerData(player).setIslandUUID(playerUUID);
+                SkyblockPlayer skyblockPlayer = PlayerData.getPlayerData(player);
+                skyblockPlayer.setIslandUUID(playerUUID);
+                skyblockPlayer.setSpawn(SkyblockIsland.getDefaultSpawn());
                 IslandData.createIsland(playerUUID);
 
                 return slimeWorld;
@@ -99,6 +98,7 @@ public class SlimeWorldManager {
             Location spawn = skyblockPlayer.getSpawn();
             if (spawn == null) spawn = skyblockIsland.getSpawn();
             spawn.setWorld(check);
+            ChatUtils.sendPlayerMessage(player,true, "&aĐã về đảo của bạn");
             player.teleport(spawn);
             return;
         }
@@ -162,7 +162,13 @@ public class SlimeWorldManager {
     }
 
     public static void unloadWorld(String islandUUID) {
-        SkyblockZ.newChain().delay(100).sync(() -> Bukkit.unloadWorld(islandUUID, true)).execute();
+        if (Bukkit.unloadWorld(islandUUID, true)) {
+
+            ChatUtils.debug("unloaded world " + islandUUID);
+        } else {
+
+            ChatUtils.debug("NOT unloaded world " + islandUUID);
+        }
         IslandData.removeIsland(islandUUID);
     }
 
@@ -173,8 +179,8 @@ public class SlimeWorldManager {
         List<Player> onlineMembers = new ArrayList<>();
 
         //Get online members
-        for (String memberUUID : skyblockIsland.getMembers()) {
-            Player member = Bukkit.getPlayer(memberUUID);
+        for (String memberUUID : skyblockIsland.getMembers().keySet()) {
+            Player member = Bukkit.getPlayer(UUID.fromString(memberUUID));
             if (member!=null) onlineMembers.add(member);
         }
 
