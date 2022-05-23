@@ -1,3 +1,9 @@
+> ⚠ **Warning**  
+> This plugin has been abandoned in its early development. This repostory is for demonstratinal purposes only.  
+> There are still a lot of features missing: island protection, visiting, permissions...
+
+---
+
 # SkyblockZ
 A Spigot plugin for Skyblock servers using Slime Region Format
 
@@ -14,8 +20,3 @@ A Spigot plugin for Skyblock servers using Slime Region Format
 
 ## Data Storage
 * Currently only supports SQLite
-* Planning on adding support for MySQL
-* No plan on supporting flat files
-
-## To Do
-_**A lot of things...**_
