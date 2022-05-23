@@ -19,7 +19,7 @@ public class ConfigManager {
 
     public static void init(SkyblockZ instance) {
         dataFolder = instance.getDataFolder();
-        configFiles.put("config.yml", new File(dataFolder, "conig.yml"));
+        configFiles.put("config.yml", new File(dataFolder, "config.yml"));
 
         checkFirstTime(instance);
 
